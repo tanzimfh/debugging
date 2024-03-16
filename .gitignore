@@ -1,0 +1,6 @@
+*/out
+__pycache__
+*.py[cod]
+.vscode
+.pytest_cache
+private
