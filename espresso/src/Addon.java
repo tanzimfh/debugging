@@ -3,6 +3,7 @@ package src;
 class Addon extends Item {
     public Addon(String name) {
         super(name, 0, 1);
+        this.price = this.calculatePrice();
     }
 
     public int calculatePrice() {

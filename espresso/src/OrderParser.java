@@ -20,6 +20,7 @@ class OrderParser implements Iterator<String>, Iterable<String> {
 
     @Override
     public boolean hasNext() {
+        try {
         if(count > 10) {
             reader.close();
             return false;
@@ -27,10 +28,14 @@ class OrderParser implements Iterator<String>, Iterable<String> {
 
         count++;
         return reader.ready();
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @Override
     public String next() {
+        try {
         String line = null;
         line = reader.readLine();
         if(line == null) {
@@ -40,6 +45,9 @@ class OrderParser implements Iterator<String>, Iterable<String> {
             return this.parseOrder(line);
         }
         return null;
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     @Override
@@ -53,10 +61,14 @@ class OrderParser implements Iterator<String>, Iterable<String> {
     }
 
     public String parseOrder(String order) {
+        try {
         String line;
         Pattern p, sp;
-        p = Pattern.compile("- (\d+) (.*) (.*)( .+)?");
-        sp = Pattern.compile("(with|and|,)");
+        //p = Pattern.compile("- (\d+) (.*) (.*)( .+)?");
+        //sample input: - 1 small coffee with sugar, sugar, sugar, milk and cream
+        //p = Pattern.compile("- (\\d+)? (.+)? (.+)? (.+)");
+        p = Pattern.compile("- (\\d+) (.+) (coffee|tea)( .+)?");
+        sp = Pattern.compile("(with|and|,| )");
         int total = 0;
         do {
             line = reader.readLine();
@@ -70,7 +82,7 @@ class OrderParser implements Iterator<String>, Iterable<String> {
             String size = m.group(2);
             String drink = m.group(3);
             String options = m.group(4);
-            price = drink == "coffee" ? 100 : (drink == "tea" ? 90 : 0);
+            price = drink.equals("coffee") ? 100 : (drink.equals("tea") ? 90 : 0);
             Drink d = new Drink(drink, price, size, quantity);
             if (options != null) {
                 String[] opts = sp.split(options);
@@ -86,7 +98,9 @@ class OrderParser implements Iterator<String>, Iterable<String> {
         } while (line != null);
 
         order += String.format("\nTotal: $%.2f", total / 100.0);
-
         return order;
+    } catch (IOException e) {
+        return null;
+    }
     }
 }

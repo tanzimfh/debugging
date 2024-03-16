@@ -1,5 +1,6 @@
 package src;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class Drink extends Item {
@@ -9,6 +10,7 @@ class Drink extends Item {
     public Drink(String name, int price, String size, int quantity) {
         super(name, price, quantity);
         this.size = size;
+        addons = new ArrayList<>();
     }
 
     public int calculatePrice() {
